@@ -11,4 +11,13 @@ model user{
   id      Int      @id @default(autoincrement())
   email   String   @unique
   name    String?
+  blogs Blog[]
+}
+
+model Blog{
+  id Int @id @default(autoincrement())
+  Title String
+  description String
+  author user @relation(fields: [authorId] , references: [id])
+  authorId Int
 }
