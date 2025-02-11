@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-
 const {PrismaClient} = require('@prisma/client');
+const isLoggedIn = require("../middleware/verifyLogin");
 const prisma = new PrismaClient();
 
 router.get('/:email', async (req, res) => {
@@ -15,12 +15,13 @@ router.get('/:email', async (req, res) => {
     res.json({user});
 });
 
-router.post('/', async (req, res) => {
-    const {email, name} = req.body;
+router.post('/', isLoggedIn ,async (req, res) => {
+    const {email, name , password} = req.body;
     let newUser = await prisma.user.create({
         data : {
             email : email,
-            name : name
+            name : name,
+            password : password
         }
     });
     res.json({newUser});

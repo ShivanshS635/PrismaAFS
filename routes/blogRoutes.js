@@ -2,15 +2,18 @@ const express = require("express");
 const router = express.Router();
 
 const {PrismaClient} = require('@prisma/client');
+const isLoggedIn = require("../middleware/verifyLogin");
 const prisma = new PrismaClient();
 
-router.post("/" , async (req , res) => {
-    const {title , description , authorId} = req.body;
+router.post("/" , isLoggedIn , async (req , res) => {
+
+    const {title , description } = req.body;
+    console.log(req.user);
     const newBlog = await prisma.blog.create({
         data : {
             Title : title,
             description : description,
-            authorId : authorId
+            authorId : req.user.id
         }
     });
     res.json({message : "blog added successfully" , data : newBlog});
