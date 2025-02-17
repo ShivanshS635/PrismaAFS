@@ -13,6 +13,7 @@ model user{
   name    String?
   password String
   blogs Blog[]
+  Like Like[]
 }
 
 model Blog{
@@ -21,4 +22,13 @@ model Blog{
   description String
   author user @relation(fields: [authorId] , references: [id])
   authorId Int
+  Like Like[]
+}
+
+model Like{
+  id Int @id @default(autoincrement())
+  userId Int
+  blogId Int
+  user user @relation(fields: [userId] , references: [id])
+  blog Blog @relation(fields: [blogId] , references: [id])
 }

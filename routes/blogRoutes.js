@@ -19,6 +19,15 @@ router.post("/" , isLoggedIn , async (req , res) => {
     res.json({message : "blog added successfully" , data : newBlog});
 });
 
+router.get("/" , async(req , res) => {
+    try{
+        const blogs = await prisma.blog.findMany();
+        res.json({data : blogs});
+    }catch(err){    
+        res.json({error : err.message});
+    }
+});
+
 router.get("/:id" , async(req , res) => {
     const id = req.params;
     const blogs = await prisma.blog.findUnique({
