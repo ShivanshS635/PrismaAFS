@@ -12,6 +12,8 @@ model user{
   email   String   @unique
   name    String?
   password String
+  verified Boolean @default(false)
+  isAdmin Boolean @default(false)
   blogs Blog[]
   Like Like[]
 }
@@ -20,6 +22,8 @@ model Blog{
   id Int @id @default(autoincrement())
   Title String
   description String
+  verified Boolean @default(false)
+
   author user @relation(fields: [authorId] , references: [id])
   authorId Int
   Like Like[]
@@ -31,4 +35,10 @@ model Like{
   blogId Int
   user user @relation(fields: [userId] , references: [id])
   blog Blog @relation(fields: [blogId] , references: [id])
+}
+
+model token{
+  id Int @id @default(autoincrement())
+  token String
+  userId Int
 }

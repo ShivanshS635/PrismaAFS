@@ -13,7 +13,8 @@ router.post("/" , isLoggedIn , async (req , res) => {
         data : {
             Title : title,
             description : description,
-            authorId : req.user.id
+            authorId : req.user.id,
+            verified: false,
         }
     });
     res.json({message : "blog added successfully" , data : newBlog});
@@ -21,7 +22,11 @@ router.post("/" , isLoggedIn , async (req , res) => {
 
 router.get("/" , async(req , res) => {
     try{
-        const blogs = await prisma.blog.findMany();
+        const blogs = await prisma.blog.findMany({
+            where: {
+                verified: true
+            }
+        });
         res.json({data : blogs});
     }catch(err){    
         res.json({error : err.message});
