@@ -41,6 +41,11 @@ router.get('/users',isLoggedIn, isAdmin, async (req, res) => {
 
 router.delete('/users/:userId',isLoggedIn, isAdmin, async (req, res) => {
     const { userId } = req.params;
+    const loggedInUserId = req.user.id;
+
+    if (parseInt(userId) === loggedInUserId) {
+        return res.status(400).json({ message: "Admin cannot delete their own account." });
+    }
 
     try {
         await prisma.blog.deleteMany({
@@ -73,6 +78,22 @@ router.put('/users/:userId/set-admin',isLoggedIn, isAdmin, async (req, res) => {
         res.status(500).json({ message: "Failed to set user as admin" });
     }
 });
+
+router.put('/users/:userId/remove-admin', isLoggedIn, isAdmin, async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        await prisma.user.update({
+            where: { id: parseInt(userId) },
+            data: { isAdmin: false }
+        });
+
+        res.json({ message: "Admin privileges removed successfully" });
+    } catch (error) {
+        console.error("Error removing admin privileges:", error);
+        res.status(500).json({ message: "Failed to remove admin privileges" });
+    }
+});
  
 router.get('/blogs',isLoggedIn, isAdmin, async (req, res) => {
     try {
@@ -87,6 +108,7 @@ router.get('/blogs',isLoggedIn, isAdmin, async (req, res) => {
 router.put('/blogs/:blogId/reject',isLoggedIn, isAdmin, async (req, res) => {
     const { blogId } = req.params;
     const { rejectionReason } = req.body;
+    const adminUser = await prisma.user.findFirst({ where: { isAdmin: true } });
 
     if (!rejectionReason) {
         return res.status(400).json({ message: "Rejection reason is required" });
@@ -101,12 +123,12 @@ router.put('/blogs/:blogId/reject',isLoggedIn, isAdmin, async (req, res) => {
             return res.status(404).json({ message: "Blog not found" });
         }
 
-        await prisma.blog.update({
-            where: { id: parseInt(blogId) },
-            data: { verified: false }
+        await prisma.blog.delete({
+            where: { id: parseInt(blogId) }
         });
 
         await sendEmail({
+            from : adminUser.email,
             to: blog.author.email,
             subject: 'Blog Rejected',
             text: `Your blog "${blog.Title}" has been rejected. Reason: ${rejectionReason}`

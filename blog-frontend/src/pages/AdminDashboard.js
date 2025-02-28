@@ -8,21 +8,21 @@ function AdminDashboard() {
   const [selectedBlogId, setSelectedBlogId] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
 
+  const fetchUsers = async () => {
+    const res = await axios.get("http://localhost:4545/api/admin/users", {
+      headers: { Authorization: sessionStorage.getItem("token") },
+    });
+    setUsers(res.data.data);
+  };
+
   const fetchBlogs = async () => {
     const res = await axios.get("http://localhost:4545/api/admin/blogs", {
-      headers: { Authorization: localStorage.getItem("token") },
+      headers: { Authorization: sessionStorage.getItem("token") },
     });
     setBlogs(res.data.data);
   };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const res = await axios.get("http://localhost:4545/api/admin/users", {
-        headers: { Authorization: localStorage.getItem("token") },
-      });
-      setUsers(res.data.data);
-    };
-
     fetchUsers();
     fetchBlogs();
   }, []);
@@ -33,10 +33,9 @@ function AdminDashboard() {
         `http://localhost:4545/api/admin/blogs/${blogId}/verify`,
         {},
         {
-          headers: { Authorization: localStorage.getItem("token") },
+          headers: { Authorization: sessionStorage.getItem("token") },
         }
       );
-      // Refresh blogs after verification
       fetchBlogs();
     } catch (error) {
       console.error("Error verifying blog:", error);
@@ -59,11 +58,10 @@ function AdminDashboard() {
         `http://localhost:4545/api/admin/blogs/${selectedBlogId}/reject`,
         { rejectionReason: rejectionReason },
         {
-          headers: { Authorization: localStorage.getItem("token") },
+          headers: { Authorization: sessionStorage.getItem("token") },
         }
       );
       setRejectionModalOpen(false);
-      // Refresh blogs after rejection
       fetchBlogs();
     } catch (error) {
       console.error("Error rejecting blog:", error);
@@ -71,40 +69,119 @@ function AdminDashboard() {
     }
   };
 
-  return (
-    <div className="p-6">
-      <>
-        <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
+  const handleDeleteUser = async (userId) => {
+    try {
+      await axios.delete(`http://localhost:4545/api/admin/users/${userId}`, {
+        headers: { Authorization: sessionStorage.getItem("token") },
+      });
+      fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("Failed to delete user");
+    }
+  };
 
-        <div className="mb-4">
-          <h2 className="text-2xl font-semibold mb-2">Users</h2>
-          <ul>
+  const handleSetAdmin = async (userId) => {
+    try {
+      await axios.put(`http://localhost:4545/api/admin/users/${userId}/set-admin`, {}, {
+        headers: { Authorization: sessionStorage.getItem("token") },
+      });
+      fetchUsers(); // Refresh the user list
+    } catch (error) {
+      console.error("Error setting user as admin:", error);
+      alert("Failed to set user as admin");
+    }
+  };
+
+  const handleDebarAsUser = async (userId) => {
+    try {
+      // Make an API call to remove admin privileges
+      await axios.put(`http://localhost:4545/api/admin/users/${userId}/remove-admin`, {}, {
+        headers: { Authorization: sessionStorage.getItem("token") },
+      });
+      fetchUsers(); // Refresh the user list
+    } catch (error) {
+      console.error("Error removing admin privileges:", error);
+      alert("Failed to remove admin privileges");
+    }
+  };
+
+  return (
+    <div className="p-6 font-sans bg-gradient-to-r from-blue-100 to-green-100 min-h-screen">
+      <>
+        <h1 className="text-3xl font-bold mb-4 text-blue-700 text-center">Admin Dashboard</h1>
+
+        <div className="mb-8 bg-white rounded-lg shadow-xl overflow-hidden">
+          <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <h2 className="text-2xl font-semibold text-gray-800">Users</h2>
+          </div>
+          <ul className=" gray-200">
             {users.map((user) => (
-              <li key={user.id} className="border p-2 rounded shadow mb-2">
-                {user.name} ({user.email}) - Role: {user.role}
+              <li key={user.id} className="px-6 py-4 hover:bg-gray-100 transition-colors duration-200 relative group">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-medium text-gray-700">{user.name}</span>
+                    <p className="text-gray-500 text-sm">{user.email}</p>
+                  </div>
+                  <div className="space-x-2 absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <button
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm"
+                      onClick={() => handleDeleteUser(user.id)}
+                    >
+                      Delete
+                    </button>
+                    {user.isAdmin ? (
+                      <button
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm"
+                        onClick={() => handleDebarAsUser(user.id)}
+                      >
+                        Debar as User
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm"
+                        onClick={() => handleSetAdmin(user.id)}
+                      >
+                        Set Admin
+                      </button>
+                    )}
+                  </div>
+                  <span className={`inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium ${user.isAdmin ? 'bg-blue-200 text-blue-800' : 'bg-green-200 text-green-800'}`}>
+                    {user.isAdmin ? 'Admin' : 'User'}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>
         </div>
 
-        <div>
-          <h2 className="text-2xl font-semibold mb-2">Blogs</h2>
-          <ul>
+        <div className="mb-8 bg-white rounded-lg shadow-xl overflow-hidden">
+          <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <h2 className="text-2xl font-semibold text-gray-800">Blogs</h2>
+          </div>
+          <ul className="divide-y divide-gray-200">
             {blogs.map((blog) => (
-              <li key={blog.id} className="border p-2 rounded shadow mb-2">
-                {blog.Title}: {blog.description}
-                <button
-                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
-                  onClick={() => handleVerifyBlog(blog.id)}
-                >
-                  Verify
-                </button>
-                <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
-                  onClick={() => handleRejectBlog(blog.id)}
-                >
-                  Reject
-                </button>
+              <li key={blog.id} className="px-6 py-4 hover:bg-gray-100 transition-colors duration-200">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-medium text-gray-700">{blog.Title}</span>
+                    <p className="text-gray-500 text-sm">{blog.description}</p>
+                  </div>
+                  <div className="space-x-2">
+                    <button
+                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      onClick={() => handleVerifyBlog(blog.id)}
+                    >
+                      Verify
+                    </button>
+                    <button
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      onClick={() => handleRejectBlog(blog.id)}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>

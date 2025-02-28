@@ -6,7 +6,7 @@ function CreateBlog() {
   const [description, setDescription] = useState("");
 
   const handleCreate = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     await axios.post("http://localhost:4545/api/blogs", { title, description }, {
       headers: { Authorization: token },
     });
