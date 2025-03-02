@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -12,13 +13,14 @@ function Register() {
   const handleRegister = async () => {
     try {
       if (!email || !password || !name) {
-        setError("Please fill in all fields.");
+        toast.error("Please fill in all fields.");
         return;
       }
       await axios.post("http://localhost:4545/api/user", { email, name, password });
+      toast.success("Registration successful! Please login.");
       navigate("/login");
     } catch (error) {
-      setError("Registration failed. Please try again.");
+      toast.error(error.response?.data?.message || "Registration failed. Please try again.");
     }
   };
 

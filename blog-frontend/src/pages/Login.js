@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -14,16 +15,17 @@ function Login() {
       sessionStorage.setItem("token", res.data.token);
       if (res.data && res.data.user) {
         sessionStorage.setItem("role", res.data.user.isAdmin ? "admin" : "user");
+        toast.success(`Welcome back, ${res.data.user.name}!`);
         if (res.data.user.isAdmin) {
           navigate("/admin");
         } else {
           navigate("/");
         }
       } else {
-        setError("Login failed: Could not retrieve user role.");
+        toast.error("Login failed: Could not retrieve user role.");
       }
     } catch (err) {
-      setError("Login failed. Please check your credentials.");
+      toast.error(err.response?.data?.message || "Login failed. Please check your credentials.");
     }
   };
 

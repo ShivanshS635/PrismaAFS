@@ -31,8 +31,12 @@ const isAdmin = async (req, res, next) => {
 
 router.get('/users',isLoggedIn, isAdmin, async (req, res) => {
     try {
+        
         const users = await prisma.user.findMany();
-        res.json({ data: users });
+        console.log(users)
+        const userList = users.filter((users) => users.id !== req.user.id);
+        console.log(userList)
+        res.json({ data: userList });
     } catch (error) {
         console.error("Error fetching users:", error);
         res.status(500).json({ message: "Failed to fetch users" });

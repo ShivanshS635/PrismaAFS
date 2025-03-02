@@ -8,37 +8,53 @@ datasource db {
 }
 
 model user{
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  password String
-  verified Boolean @default(false)
-  isAdmin Boolean @default(false)
-  blogs Blog[]
-  Like Like[]
+  id          Int               @id @default(autoincrement())
+  email       String            @unique
+  name        String?
+  password    String
+  verified    Boolean           @default(false)
+  isAdmin     Boolean           @default(false)
+  blogs       Blog[]
+  Like        Like[]
+  purchases   PremiumPurchase[]
 }
 
 model Blog{
-  id Int @id @default(autoincrement())
-  Title String
+  id          Int               @id @default(autoincrement())
+  Title       String
   description String
-  verified Boolean @default(false)
+  verified    Boolean           @default(false)
+  premium     Boolean           @default(false)
+  likeCount   Int               @default(0)
 
-  author user @relation(fields: [authorId] , references: [id])
-  authorId Int
-  Like Like[]
+  author      user              @relation(fields: [authorId] , references: [id])
+  authorId    Int
+  Like        Like[]
+  purchases   PremiumPurchase[]
 }
 
 model Like{
-  id Int @id @default(autoincrement())
-  userId Int
-  blogId Int
-  user user @relation(fields: [userId] , references: [id])
-  blog Blog @relation(fields: [blogId] , references: [id])
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  blogId    Int
+  createdAt DateTime @default(now())
+  user      user     @relation(fields: [userId] , references: [id])
+  blog      Blog     @relation(fields: [blogId] , references: [id])
+  
+  @@unique([userId, blogId])
 }
 
 model token{
-  id Int @id @default(autoincrement())
-  token String
-  userId Int
+  id      Int      @id @default(autoincrement())
+  token   String
+  userId  Int
+}
+
+model PremiumPurchase {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  blogId    Int
+  createdAt DateTime @default(now())
+  user      user     @relation(fields: [userId], references: [id])
+  blog      Blog     @relation(fields: [blogId], references: [id])
 }

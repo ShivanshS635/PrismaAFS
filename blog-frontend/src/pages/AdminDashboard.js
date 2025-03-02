@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -36,10 +37,10 @@ function AdminDashboard() {
           headers: { Authorization: sessionStorage.getItem("token") },
         }
       );
+      toast.success("Blog verified successfully!");
       fetchBlogs();
     } catch (error) {
-      console.error("Error verifying blog:", error);
-      alert("Failed to verify blog");
+      toast.error("Failed to verify blog. Please try again.");
     }
   };
 
@@ -54,6 +55,10 @@ function AdminDashboard() {
 
   const submitRejection = async () => {
     try {
+      if (!rejectionReason.trim()) {
+        toast.warning("Please provide a rejection reason.");
+        return;
+      }
       await axios.put(
         `http://localhost:4545/api/admin/blogs/${selectedBlogId}/reject`,
         { rejectionReason: rejectionReason },
@@ -61,11 +66,11 @@ function AdminDashboard() {
           headers: { Authorization: sessionStorage.getItem("token") },
         }
       );
+      toast.success("Blog rejected successfully!");
       setRejectionModalOpen(false);
       fetchBlogs();
     } catch (error) {
-      console.error("Error rejecting blog:", error);
-      alert("Failed to reject blog");
+      toast.error("Failed to reject blog. Please try again.");
     }
   };
 
@@ -74,10 +79,10 @@ function AdminDashboard() {
       await axios.delete(`http://localhost:4545/api/admin/users/${userId}`, {
         headers: { Authorization: sessionStorage.getItem("token") },
       });
+      toast.success("User deleted successfully!");
       fetchUsers();
     } catch (error) {
-      console.error("Error deleting user:", error);
-      alert("Failed to delete user");
+      toast.error("Failed to delete user. Please try again.");
     }
   };
 
@@ -86,10 +91,10 @@ function AdminDashboard() {
       await axios.put(`http://localhost:4545/api/admin/users/${userId}/set-admin`, {}, {
         headers: { Authorization: sessionStorage.getItem("token") },
       });
+      toast.success("User promoted to admin successfully!");
       fetchUsers(); // Refresh the user list
     } catch (error) {
-      console.error("Error setting user as admin:", error);
-      alert("Failed to set user as admin");
+      toast.error("Failed to set user as admin. Please try again.");
     }
   };
 
@@ -99,10 +104,10 @@ function AdminDashboard() {
       await axios.put(`http://localhost:4545/api/admin/users/${userId}/remove-admin`, {}, {
         headers: { Authorization: sessionStorage.getItem("token") },
       });
+      toast.success("Admin privileges removed successfully!");
       fetchUsers(); // Refresh the user list
     } catch (error) {
-      console.error("Error removing admin privileges:", error);
-      alert("Failed to remove admin privileges");
+      toast.error("Failed to remove admin privileges. Please try again.");
     }
   };
 
