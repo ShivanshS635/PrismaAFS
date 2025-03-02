@@ -16,7 +16,7 @@ function CreateBlog() {
       
       const token = sessionStorage.getItem("token");
       await axios.post(
-        "http://localhost:4545/api/blogs",
+        "https://prismaafs.onrender.com/api/blogs",
         { title, description, premium },
         {
           headers: { Authorization: token },

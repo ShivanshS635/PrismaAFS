@@ -49,7 +49,7 @@ router.post('/' ,async (req, res) => {
     console.log(newToken.token);
     console.log(newToken.userId)
 
-    let link = `http://localhost:4545/verify/${newToken.token}/${newToken.userId}`;
+    let link = `https://prismaafs.onrender.com/verify/${newToken.token}/${newToken.userId}`;
     
     sendMail(email , "Verify Email" , link);
 

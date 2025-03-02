@@ -11,7 +11,7 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:4545/api/auth/login", { email, password });
+      const res = await axios.post("https://prismaafs.onrender.com/api/auth/login", { email, password });
       sessionStorage.setItem("token", res.data.token);
       if (res.data && res.data.user) {
         sessionStorage.setItem("role", res.data.user.isAdmin ? "admin" : "user");
