@@ -16,7 +16,7 @@ function Register() {
         toast.error("Please fill in all fields.");
         return;
       }
-      await axios.post("https://prismaafs.onrender.com/api/user", { email, name, password });
+      await axios.post("http://localhost:4545/api/user", { email, name, password });
       toast.success("Registration successful! Please login.");
       navigate("/login");
     } catch (error) {

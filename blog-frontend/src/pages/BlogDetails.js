@@ -15,12 +15,12 @@ function BlogDetails() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const blogRes = await axios.get(`https://prismaafs.onrender.com/api/blogs/${id}`);
+        const blogRes = await axios.get(`http://localhost:4545/api/blogs/${id}`);
         setBlog(blogRes.data.data);
         
         if (blogRes.data.data.premium && token) {
           const purchaseRes = await axios.get(
-            `https://prismaafs.onrender.com/api/blogs/checkPurchase/${id}`,
+            `http://localhost:4545/api/blogs/checkPurchase/${id}`,
             { headers: { Authorization: token } }
           );
           setHasPurchased(purchaseRes.data.purchased);
@@ -28,10 +28,10 @@ function BlogDetails() {
 
         if (token) {
           const [likeStatus, likesCount] = await Promise.all([
-            axios.get(`https://prismaafs.onrender.com/api/likes/${id}/check`, {
+            axios.get(`http://localhost:4545/api/likes/${id}/check`, {
               headers: { Authorization: token }
             }),
-            axios.get(`https://prismaafs.onrender.com/api/likes/${id}/count`)
+            axios.get(`http://localhost:4545/api/likes/${id}/count`)
           ]);
           
           setIsLiked(likeStatus.data.liked);
@@ -50,7 +50,7 @@ function BlogDetails() {
   const handlePurchase = async () => {
     try {
       await axios.post(
-        `https://prismaafs.onrender.com/api/blogs/purchase/${id}`,
+        `http://localhost:4545/api/blogs/purchase/${id}`,
         {},
         { headers: { Authorization: token } }
       );
@@ -64,7 +64,7 @@ function BlogDetails() {
   const handleLike = async () => {
     try {
       const response = await axios.post(
-        `https://prismaafs.onrender.com/api/likes/${id}`,
+        `http://localhost:4545/api/likes/${id}`,
         {},
         { headers: { Authorization: token } }
       );

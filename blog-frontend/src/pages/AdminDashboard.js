@@ -10,14 +10,14 @@ function AdminDashboard() {
   const [rejectionReason, setRejectionReason] = useState("");
 
   const fetchUsers = async () => {
-    const res = await axios.get("https://prismaafs.onrender.com/api/admin/users", {
+    const res = await axios.get("http://localhost:4545/api/admin/users", {
       headers: { Authorization: sessionStorage.getItem("token") },
     });
     setUsers(res.data.data);
   };
 
   const fetchBlogs = async () => {
-    const res = await axios.get("https://prismaafs.onrender.com/api/admin/blogs", {
+    const res = await axios.get("http://localhost:4545/api/admin/blogs", {
       headers: { Authorization: sessionStorage.getItem("token") },
     });
     setBlogs(res.data.data);
@@ -31,7 +31,7 @@ function AdminDashboard() {
   const handleVerifyBlog = async (blogId) => {
     try {
       await axios.put(
-        `https://prismaafs.onrender.com/api/admin/blogs/${blogId}/verify`,
+        `http://localhost:4545/api/admin/blogs/${blogId}/verify`,
         {},
         {
           headers: { Authorization: sessionStorage.getItem("token") },
@@ -60,7 +60,7 @@ function AdminDashboard() {
         return;
       }
       await axios.put(
-        `https://prismaafs.onrender.com/api/admin/blogs/${selectedBlogId}/reject`,
+        `http://localhost:4545/api/admin/blogs/${selectedBlogId}/reject`,
         { rejectionReason: rejectionReason },
         {
           headers: { Authorization: sessionStorage.getItem("token") },
@@ -76,7 +76,7 @@ function AdminDashboard() {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete(`https://prismaafs.onrender.com/api/admin/users/${userId}`, {
+      await axios.delete(`http://localhost:4545/api/admin/users/${userId}`, {
         headers: { Authorization: sessionStorage.getItem("token") },
       });
       toast.success("User deleted successfully!");
@@ -88,7 +88,7 @@ function AdminDashboard() {
 
   const handleSetAdmin = async (userId) => {
     try {
-      await axios.put(`https://prismaafs.onrender.com/api/admin/users/${userId}/set-admin`, {}, {
+      await axios.put(`http://localhost:4545/api/admin/users/${userId}/set-admin`, {}, {
         headers: { Authorization: sessionStorage.getItem("token") },
       });
       toast.success("User promoted to admin successfully!");
@@ -101,7 +101,7 @@ function AdminDashboard() {
   const handleDebarAsUser = async (userId) => {
     try {
       // Make an API call to remove admin privileges
-      await axios.put(`https://prismaafs.onrender.com/api/admin/users/${userId}/remove-admin`, {}, {
+      await axios.put(`http://localhost:4545/api/admin/users/${userId}/remove-admin`, {}, {
         headers: { Authorization: sessionStorage.getItem("token") },
       });
       toast.success("Admin privileges removed successfully!");

@@ -15,7 +15,7 @@ function AdminRegister() {
         setError("Please fill in all fields.");
         return;
       }
-      await axios.post("https://prismaafs.onrender.com/api/auth/register", { email, name, password, isAdmin: true });
+      await axios.post("http://localhost:4545/api/auth/register", { email, name, password, isAdmin: true });
       navigate("/admin/login");
     } catch (err) {
       setError("Registration failed. Please try again.");
