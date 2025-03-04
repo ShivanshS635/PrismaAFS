@@ -127,15 +127,34 @@ router.put('/blogs/:blogId/reject',isLoggedIn, isAdmin, async (req, res) => {
             return res.status(404).json({ message: "Blog not found" });
         }
 
+        await prisma.like.deleteMany({
+            where: { blogId: parseInt(blogId) }
+        });
+
         await prisma.blog.delete({
             where: { id: parseInt(blogId) }
         });
 
         await sendEmail({
-            from : adminUser.email,
+            from: adminUser.email,
             to: blog.author.email,
-            subject: 'Blog Rejected',
-            text: `Your blog "${blog.Title}" has been rejected. Reason: ${rejectionReason}`
+            subject: 'Blog Submission Update: Action Required',
+            text: `Dear ${blog.author.name},
+
+We have reviewed your blog submission "${blog.Title}" and regret to inform you that it does not meet our current publishing criteria.
+
+Reason for Rejection:
+${rejectionReason}
+
+We encourage you to:
+• Review and address the feedback provided
+• Make necessary revisions
+• Submit a new version of your blog
+
+If you have any questions, please don't hesitate to reach out.
+
+Best regards,
+The Editorial Team`
         });
 
         res.json({ message: "Blog rejected successfully" });
@@ -165,8 +184,22 @@ router.put('/blogs/:blogId/verify',isLoggedIn, isAdmin, async (req, res) => {
 
         await sendEmail({
             to: blog.author.email,
-            subject: 'Blog Verified',
-            text: `Your blog "${blog.Title}" has been verified and is now live!`
+            subject: '🎉 Congratulations! Your Blog Has Been Approved',
+            text: `Dear ${blog.author.name},
+
+Great news! 🌟
+
+Your blog post "${blog.Title}" has been reviewed and approved by our editorial team. It's now live on our platform!
+
+Key Points:
+• Your blog is now visible to all users
+• You can share it with your network
+• You can track engagement through your dashboard
+
+Thank you for contributing to our community. We look forward to your future submissions!
+
+Best regards,
+The Editorial Team`
         });
 
         res.json({ message: "Blog verified successfully" });

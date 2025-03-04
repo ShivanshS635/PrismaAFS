@@ -13,11 +13,16 @@ const transporter = nodemailer.createTransport({
   });
 
 const sendEmail = async ({from, to, subject, text }) => {
+    const htmlContent = text.replace(/\n/g, '<br>');
+    
     const mailOptions = {
-        from: from,
+        from: from || "Blog Platform <noreply@blogplatform.com>",
         to: to,
         subject: subject,
-        text: text
+        text: text,
+        html: `<div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+            ${htmlContent}
+        </div>`
     };
 
     try {
