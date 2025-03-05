@@ -92,7 +92,7 @@ function AdminDashboard() {
         headers: { Authorization: sessionStorage.getItem("token") },
       });
       toast.success("User promoted to admin successfully!");
-      fetchUsers(); // Refresh the user list
+      fetchUsers();
     } catch (error) {
       toast.error("Failed to set user as admin. Please try again.");
     }
