@@ -9,7 +9,6 @@ function Register() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  setError();
 
   const handleRegister = async () => {
     try {

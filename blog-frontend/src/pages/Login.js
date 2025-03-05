@@ -8,7 +8,6 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  setError();
 
   const handleLogin = async () => {
     try {
