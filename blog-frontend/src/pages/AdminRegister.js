@@ -13,12 +13,16 @@ function AdminRegister() {
   const handleRegister = async () => {
     try {
       if (!email || !password || !name) {
+        toast.error("Please fill in all fields.");
         setError("Please fill in all fields.");
         return;
       }
       await axios.post("https://prismaafs.onrender.com/api/auth/register", { email, name, password, isAdmin: true });
+      toast.success("Registration successful! Please login.");
       navigate("/admin/login");
     } catch (err) {
+      toast.error(error.response?.data?.message || "Registration failed. Please try again.");
+  
       setError("Registration failed. Please try again.");
     }
   };
@@ -78,12 +82,12 @@ function AdminRegister() {
             <div className="text-red-500 text-sm text-center">{error}</div>
           )}
 
-          <div></div>
+          <div>
             <button
               type="submit"
               onClick={handleRegister}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            ></button>
+            >
               Register as Admin
             </button>
           </div>
