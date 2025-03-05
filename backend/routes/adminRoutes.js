@@ -43,7 +43,7 @@ router.get('/users',isLoggedIn, isAdmin, async (req, res) => {
     }
 });
 
-router.delete('/users/:userId',isLoggedIn, isAdmin, async (req, res) => {
+router.delete('/users/:userId', isLoggedIn, isAdmin, async (req, res) => {
     const { userId } = req.params;
     const loggedInUserId = req.user.id;
 
@@ -52,18 +52,34 @@ router.delete('/users/:userId',isLoggedIn, isAdmin, async (req, res) => {
     }
 
     try {
+        // First, delete all likes by this user
+        await prisma.like.deleteMany({
+            where: { userId: parseInt(userId) }
+        });
+
+        // Then delete all likes on user's blogs
+        await prisma.like.deleteMany({
+            where: {
+                blog: {
+                    authorId: parseInt(userId)
+                }
+            }
+        });
+
+        // Now delete all blogs by the user
         await prisma.blog.deleteMany({
             where: { authorId: parseInt(userId) }
         });
 
+        // Finally, delete the user
         await prisma.user.delete({
             where: { id: parseInt(userId) }
         });
 
-        res.json({ message: "User and associated blogs deleted successfully" });
+        res.json({ message: "User and associated data deleted successfully" });
     } catch (error) {
-        console.error("Error deleting user and blogs:", error);
-        res.status(500).json({ message: "Failed to delete user and blogs" });
+        console.error("Error deleting user and associated data:", error);
+        res.status(500).json({ message: "Failed to delete user and associated data" });
     }
 });
 
