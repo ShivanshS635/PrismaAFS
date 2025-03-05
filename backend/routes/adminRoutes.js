@@ -52,12 +52,12 @@ router.delete('/users/:userId', isLoggedIn, isAdmin, async (req, res) => {
     }
 
     try {
-        // First, delete all likes by this user
+        // 1. Delete all likes by this user
         await prisma.like.deleteMany({
             where: { userId: parseInt(userId) }
         });
 
-        // Then delete all likes on user's blogs
+        // 2. Delete likes on user's blogs
         await prisma.like.deleteMany({
             where: {
                 blog: {
@@ -66,12 +66,17 @@ router.delete('/users/:userId', isLoggedIn, isAdmin, async (req, res) => {
             }
         });
 
-        // Now delete all blogs by the user
+        // 3. Delete premium purchase records
+        await prisma.premiumPurchase.deleteMany({
+            where: { userId: parseInt(userId) }
+        });
+
+        // 4. Delete all blogs by the user
         await prisma.blog.deleteMany({
             where: { authorId: parseInt(userId) }
         });
 
-        // Finally, delete the user
+        // 5. Finally, delete the user
         await prisma.user.delete({
             where: { id: parseInt(userId) }
         });
