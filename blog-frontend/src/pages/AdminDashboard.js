@@ -112,23 +112,23 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="p-6 font-sans bg-gradient-to-r from-blue-100 to-green-100 min-h-screen">
+    <div className="p-2 sm:p-4 md:p-6 font-sans bg-gradient-to-r from-blue-100 to-green-100 min-h-screen">
       <>
-        <h1 className="text-3xl font-bold mb-4 text-blue-700 text-center">Admin Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-700 text-center">Admin Dashboard</h1>
 
-        <div className="mb-8 bg-white rounded-lg shadow-xl overflow-hidden">
+        <div className="mb-6 sm:mb-8 bg-white rounded-lg shadow-xl overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
             <h2 className="text-2xl font-semibold text-gray-800">Users</h2>
           </div>
-          <ul className=" gray-200">
+          <ul className="divide-y divide-gray-200">
             {users.map((user) => (
-              <li key={user.id} className="px-6 py-4 hover:bg-gray-100 transition-colors duration-200 relative group">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="font-medium text-gray-700">{user.name}</span>
+              <li key={user.id} className="px-3 sm:px-6 py-3 sm:py-4 hover:bg-gray-100 transition-colors duration-200 relative group">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                  <div className="flex-1">
+                    <span className="font-medium text-gray-700 block sm:inline">{user.name}</span>
                     <p className="text-gray-500 text-sm">{user.email}</p>
                   </div>
-                  <div className="space-x-2 absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="flex flex-wrap gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
                     <button
                       className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm"
                       onClick={() => handleDeleteUser(user.id)}

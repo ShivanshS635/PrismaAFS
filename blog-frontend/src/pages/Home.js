@@ -32,21 +32,21 @@ function Home() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
-      <header className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">All Blogs</h1>
-        <div className="space-x-4">
-          <Link to="/create" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    <div className="bg-gray-100 min-h-screen p-2 sm:p-4 md:p-6">
+      <header className="flex flex-col sm:flex-row items-center justify-between mb-6 space-y-4 sm:space-y-0">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">All Blogs</h1>
+        <div className="space-x-2 sm:space-x-4">
+          <Link to="/create" className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
             Create Blog
           </Link>
           {role === "admin" && (
-            <Link to="/admin" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            <Link to="/admin" className="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
               Admin Dashboard
             </Link>
           )}
         </div>
       </header>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
         {Array.isArray(blogs) &&
           blogs.map((blog) => (
             <Link
