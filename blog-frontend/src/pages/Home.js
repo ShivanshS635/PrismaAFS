@@ -11,11 +11,11 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const blogsRes = await axios.get("http://localhost:4545/api/blogs");
+        const blogsRes = await axios.get("https://prismaafs.onrender.com/api/blogs");
         setBlogs(blogsRes.data.data);
 
         if (token) {
-          const purchasedRes = await axios.get("http://localhost:4545/api/blogs/purchases", {
+          const purchasedRes = await axios.get("https://prismaafs.onrender.com/api/blogs/purchases", {
             headers: { Authorization: token }
           });
           setPurchasedBlogs(purchasedRes.data.purchases.map(p => p.blogId));

@@ -41,5 +41,5 @@ app.get("/" , (req,res) => {
 })
 
 app.listen(4545 , () => {
-    console.log("Server Started at http://localhost:4545");
+    console.log("Server Started at https://prismaafs.onrender.com");
 })
